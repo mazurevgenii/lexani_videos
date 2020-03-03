@@ -1,0 +1,12 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="buttons">
+        <form action="app/controller/" method="POST">
+            <input name="save" type="submit" value="Save to CSV">
+        </form>
+        <form action="" method="POST">
+            <input name="request" type="submit" value="New request to Lexani">
+        </form>
+    </div>
+{% endblock %}
