@@ -17,193 +17,91 @@ class LexaniVideos
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=100, nullable=true)
      */
-    private $Link;
+    private $youtubeLink;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private $YouTube_Link;
-
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
-    private $YouTube_Link_old;
-
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
-    private $Title;
-
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
-    private $Title_old;
+    private $title;
 
     /**
      * @ORM\Column(type="text", nullable=true)
      */
-    private $Description;
+    private $description;
 
     /**
      * @ORM\Column(type="text", nullable=true)
      */
-    private $Description_old;
+    private $thumbnail;
 
     /**
-     * @ORM\Column(type="text", nullable=true)
+     * @ORM\Column(type="string", length=5)
      */
-    private $Thumbnail;
-
-    /**
-     * @ORM\Column(type="text", nullable=true)
-     */
-    private $Thumbnail_old;
-
-    /**
-     * @ORM\Column(type="text")
-     */
-    private $IP;
-
-    /**
-     * @ORM\Column(type="text")
-     */
-    private $Browser;
+    private $parseType;
 
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getLink(): ?string
+    public function getYoutubeLink(): ?string
     {
-        return $this->Link;
+        return $this->youtubeLink;
     }
 
-    public function setLink(string $Link): self
+    public function setYoutubeLink(?string $youtubeLink): self
     {
-        $this->Link = $Link;
-
-        return $this;
-    }
-
-    public function getYouTubeLink(): ?string
-    {
-        return $this->YouTube_Link;
-    }
-
-    public function setYouTubeLink(string $YouTube_Link): self
-    {
-        $this->YouTube_Link = $YouTube_Link;
-
-        return $this;
-    }
-
-    public function getYouTubeLinkOld(): ?string
-    {
-        return $this->YouTube_Link_old;
-    }
-
-    public function setYouTubeLinkOld(string $YouTube_Link_old): self
-    {
-        $this->YouTube_Link_old = $YouTube_Link_old;
+        $this->youtubeLink = $youtubeLink;
 
         return $this;
     }
 
     public function getTitle(): ?string
     {
-        return $this->Title;
+        return $this->title;
     }
 
-    public function setTitle(?string $Title): self
+    public function setTitle(?string $title): self
     {
-        $this->Title = $Title;
-
-        return $this;
-    }
-
-    public function getTitleOld(): ?string
-    {
-        return $this->Title_old;
-    }
-
-    public function setTitleOld(?string $Title_old): self
-    {
-        $this->Title_old = $Title_old;
+        $this->title = $title;
 
         return $this;
     }
 
     public function getDescription(): ?string
     {
-        return $this->Description;
+        return $this->description;
     }
 
-    public function setDescription(?string $Description): self
+    public function setDescription(?string $description): self
     {
-        $this->Description = $Description;
-
-        return $this;
-    }
-
-    public function getDescriptionOld(): ?string
-    {
-        return $this->Description_old;
-    }
-
-    public function setDescriptionOld(?string $Description_old): self
-    {
-        $this->Description_old = $Description_old;
+        $this->description = $description;
 
         return $this;
     }
 
     public function getThumbnail(): ?string
     {
-        return $this->Thumbnail;
+        return $this->thumbnail;
     }
 
-    public function setThumbnail(?string $Thumbnail): self
+    public function setThumbnail(?string $thumbnail): self
     {
-        $this->Thumbnail = $Thumbnail;
+        $this->thumbnail = $thumbnail;
 
         return $this;
     }
 
-    public function getThumbnailOld(): ?string
+    public function getParseType(): ?string
     {
-        return $this->Thumbnail_old;
+        return $this->parseType;
     }
 
-    public function setThumbnailOld(?string $Thumbnail_old): self
+    public function setParseType(string $parseType): self
     {
-        $this->Thumbnail_old = $Thumbnail_old;
-
-        return $this;
-    }
-
-    public function getIP(): ?string
-    {
-        return $this->IP;
-    }
-
-    public function setIP(string $IP): self
-    {
-        $this->IP = $IP;
-
-        return $this;
-    }
-
-    public function getBrowser(): ?string
-    {
-        return $this->Browser;
-    }
-
-    public function setBrowser(string $Browser): self
-    {
-        $this->Browser = $Browser;
+        $this->parseType = $parseType;
 
         return $this;
     }
