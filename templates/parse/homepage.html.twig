@@ -2,11 +2,37 @@
 
 {% block body %}
     <div class="buttons">
-        <form action="app/controller/" method="POST">
-            <input name="save" type="submit" value="Save to CSV">
-        </form>
-        <form action="" method="POST">
+        <form action="{{ path('homepage') }}" method="POST">
             <input name="request" type="submit" value="New request to Lexani">
         </form>
+        <form action="{{ path('homepage') }}" method="POST">
+            <input name="save" type="submit" value="Save to CSV">
+        </form>
+        <form action="{{ path('homepage') }}" method="POST">
+            <input name="saveWithCompare" type="submit" value="Save to CSV with Compare" disabled="disabled">
+        </form>
     </div>
+
+    <h1 class="h1">Video data</h1>
+
+    <div class="container">
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-4">
+            <div class="col">Link</div>
+            <div class="col">Title</div>
+            <div class="col">Description</div>
+            <div class="col">Thumbnail</div>
+        </div>
+    </div>
+        {% for video in videoData %}
+            <div class="container">
+                <div class="row row-cols-1 row-cols-sm-2 row-cols-md-4">
+                    <div class="col">{{ video.youtubeLink }}</div>
+                    <div class="col">{{ video.title }}</div>
+                    <div class="col">{{ video.description }}</div>
+                    <div class="col">{{ video.thumbnail }}</div>
+                </div>
+            </div>
+
+        {% endfor %}
+
 {% endblock %}

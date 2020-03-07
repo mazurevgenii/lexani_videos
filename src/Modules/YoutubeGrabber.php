@@ -4,24 +4,23 @@
 namespace App\Modules;
 
 
+use App\Entity\LexaniVideos;
+use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\HttpClient\HttpClient;
 
 class YoutubeGrabber
 {
 
-    public function getContentsFromHttpClient($url)
+    public function getContentsFromYouTube(EntityManager $em)
     {
+
         $client = HttpClient::create();
-        $response = $client->request('GET', $url);
+        $response = $client->request('GET', 'https://lexani.com/videos');
         $content = $response->getContent();
 
-        return $content;
-    }
-
-    public function getVideoId($html)
-    {
-        $crawler = new Crawler($html);
+        $crawler = new Crawler($content);
 
         $videoId = $crawler
             ->filterXpath('//div[@class="gallery thumb_list"]/div[@data-src]')
@@ -29,21 +28,37 @@ class YoutubeGrabber
                 return $node->attr('data-src');
             });
 
-        return $videoId;
-    }
+        foreach ($videoId as $key=>$id) {
+            /*$youtubeLink = "https://www.googleapis.com/youtube/v3/videos?id=" . $videoId . "&key=AIzaSyCgK1s0ZG8rQB2I9sJ-YmvrYrkQ16Qg7eE&part=snippet&fields=items(snippet(title,description))";*/
 
-    public function getFieldsFromYoutube ($videoId) // You tube API AIzaSyCgK1s0ZG8rQB2I9sJ-YmvrYrkQ16Qg7eE
-    {
-        $url = "https://www.googleapis.com/youtube/v3/videos?id=" . $videoId . "&key=AIzaSyCgK1s0ZG8rQB2I9sJ-YmvrYrkQ16Qg7eE&part=snippet&fields=items(id,snippet(title,description,thumbnails(high(url))))";
+            /*$youtubeLinkResponse = $client->request('GET', $youtubeLink);
+            $data = $youtubeLinkResponse->getContent();
 
-        $data = file_get_contents($url);
-        $json = json_decode($data, true);
+            $json = json_decode($data, true);
 
-        $title = $json[items][0][snippet][title];
-        $description = $json[items][0][snippet][description];
-        $thumbnails = $json[items][0][snippet][thumbnails][high][url];
+            $title = $json[items][0][snippet][title];
+            $description = $json[items][0][snippet][description];
+            $thumbnails = $json[items][0][snippet][thumbnails][high][url];*/
 
-        return  $title;
+            if ($key>1){
+                break;
+            }
 
+            $youtubeLink = "https://www.youtube.com/watch?v=" . $id;
+            $title = "Video Title".rand(1, 20);
+            $description = "Video Description" . rand(21, 40);
+            $thumbnails = "http://img.youtube.com/vi/" . $id . "/0.jpg";
+            $parseType = "new";
+
+            $lexaniVideos = new LexaniVideos();
+            $lexaniVideos->setYoutubeLink($youtubeLink)
+                ->setTitle($title)
+                ->setDescription($description)
+                ->setThumbnail($thumbnails)
+                ->setParseType($parseType);
+
+            $em->persist($lexaniVideos);
+        }
+        $em->flush();
     }
 }

@@ -10,10 +10,11 @@ class CsvSaver
 
         $fp = fopen('result.csv', 'w');
 
-        // Loop through file pointer and a line
-        foreach ($this->$array as $fields) {
-            fputcsv($fp, $fields, "|");
+        fputcsv($fp, ['Link','Title','Description','Thumbnail']);
+
+        foreach ($array as $fields) {
+            $newArray =  (array) $fields;
+            fputcsv($fp, $newArray);
         }
     }
-
 }
