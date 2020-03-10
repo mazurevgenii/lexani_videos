@@ -19,22 +19,20 @@ class LexaniVideosRepository extends ServiceEntityRepository
         parent::__construct($registry, LexaniVideos::class);
     }
 
-    // /**
-    //  * @return LexaniVideos[] Returns an array of LexaniVideos objects
-    //  */
-    /*
-    public function findByExampleField($value)
-    {
-        return $this->createQueryBuilder('l')
-            ->andWhere('l.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('l.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
-    }
+    /**
+    * @return LexaniVideos[]
     */
+
+    public function findVideoDataByParseType($parseType):array
+    {
+        return $this->createQueryBuilder('a')
+            ->where('a.parseType = :parseType')
+            ->setParameter('parseType', $parseType)
+            ->getQuery()
+            ->execute();
+    }
+
+
 
     /*
     public function findOneBySomeField($value): ?LexaniVideos

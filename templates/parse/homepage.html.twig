@@ -1,38 +1,54 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    <div class="buttons">
-        <form action="{{ path('homepage') }}" method="POST">
-            <input name="request" type="submit" value="New request to Lexani">
-        </form>
-        <form action="{{ path('homepage') }}" method="POST">
-            <input name="save" type="submit" value="Save to CSV">
-        </form>
-        <form action="{{ path('homepage') }}" method="POST">
-            <input name="saveWithCompare" type="submit" value="Save to CSV with Compare" disabled="disabled">
-        </form>
-    </div>
+    <div class="container-lg">
+        <div class="buttons">
+            <form action="{{ path('homepage') }}" method="POST">
+                <input name="request" type="submit" value="New request to Lexani" class="btn btn-primary">
+            </form>
+            <form action="{{ path('homepage') }}" method="POST">
+                <input name="save" type="submit" value="Save to CSV" class="btn btn-primary">
+            </form>
+            <form action="{{ path('homepage') }}" method="POST">
+                <input name="saveWithCompare" type="submit" value="Save to CSV with Compare" class="btn btn-primary" {{ buttonStatus }}>
+            </form>
 
-    <h1 class="h1">Video data</h1>
+        </div>
 
-    <div class="container">
-        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-4">
-            <div class="col">Link</div>
-            <div class="col">Title</div>
-            <div class="col">Description</div>
-            <div class="col">Thumbnail</div>
+        <h1 class="sub-header">Actual Video data</h1>
+
+        <div class="table-responsive">
+            <table class="table-sm">
+                <thead>
+                <tr>
+                    <th>Link</th>
+                    <th>Title</th>
+                    <th>Description</th>
+                    <th>Thumbnail</th>
+                </tr>
+                </thead>
+                <tbody>
+                    {% for video in videoData %}
+                        <tr>
+                            <td>{{ video.youtubeLink }}</td>
+                            <td>{{ video.title }}</td>
+                            <td>{{ video.description }}</td>
+                            <td>{{ video.thumbnail }}</td>
+                            <td>
+                                <a href="/update/{{ video.id }}" class="btn btn-info">Update</a>
+                            </td>
+                            <td>
+                                <a href="/delete/{{ video.id }}" class="btn btn-danger">Delete</a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+
+            <a href="{{ path('new_data') }}" class="btn btn-warning">+ Add NEW</a>
+
+
         </div>
     </div>
-        {% for video in videoData %}
-            <div class="container">
-                <div class="row row-cols-1 row-cols-sm-2 row-cols-md-4">
-                    <div class="col">{{ video.youtubeLink }}</div>
-                    <div class="col">{{ video.title }}</div>
-                    <div class="col">{{ video.description }}</div>
-                    <div class="col">{{ video.thumbnail }}</div>
-                </div>
-            </div>
-
-        {% endfor %}
-
 {% endblock %}

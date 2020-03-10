@@ -13,7 +13,7 @@ use Symfony\Component\HttpClient\HttpClient;
 class YoutubeGrabber
 {
 
-    public function getContentsFromYouTube(EntityManager $em)
+    public function getContentsFromYouTube(EntityManagerInterface $em)
     {
 
         $client = HttpClient::create();
@@ -29,7 +29,7 @@ class YoutubeGrabber
             });
 
         foreach ($videoId as $key=>$id) {
-            /*$youtubeLink = "https://www.googleapis.com/youtube/v3/videos?id=" . $videoId . "&key=AIzaSyCgK1s0ZG8rQB2I9sJ-YmvrYrkQ16Qg7eE&part=snippet&fields=items(snippet(title,description))";*/
+            /*$youtubeLink = "https://www.googleapis.com/youtube/v3/videos?id=" . $videoId . "&key=AIzaSyAyH7TxTT-Mq0qmEvJ-NSMiOmohZ53JOl4&part=snippet&fields=items(snippet(title,description))";*/
 
             /*$youtubeLinkResponse = $client->request('GET', $youtubeLink);
             $data = $youtubeLinkResponse->getContent();
@@ -40,7 +40,7 @@ class YoutubeGrabber
             $description = $json[items][0][snippet][description];
             $thumbnails = $json[items][0][snippet][thumbnails][high][url];*/
 
-            if ($key>1){
+            if ($key>4){
                 break;
             }
 
