@@ -21,17 +21,17 @@ class PageController extends AbstractController
     /**
      * @Route("/", name="homepage")
      */
-    public function  homepage(YoutubeGrabber $grabber, CsvSaver $save, EntityManagerInterface $em, Request $request, LexaniVideosRepository $repository) {
-
-        if ($request->request->get('request')==='New request to Lexani'){
+    public function homepage(YoutubeGrabber $grabber, CsvSaver $save, EntityManagerInterface $em, Request $request, LexaniVideosRepository $repository)
+    {
+        if ($request->request->get('request') === 'New request to Lexani') {
 
             $oldVideoData = $repository->findVideoDataByParseType('old');
-            foreach ($oldVideoData as $oldData){
+            foreach ($oldVideoData as $oldData) {
                 $em->remove($oldData);
             }
 
             $newVideoData = $repository->findVideoDataByParseType('new');
-            foreach ($newVideoData as $newData){
+            foreach ($newVideoData as $newData) {
                 $newData->setParseType('old');
             }
             $em->flush();
@@ -39,9 +39,9 @@ class PageController extends AbstractController
             $grabber->getContentsFromYouTube($em);
         }
 
-        if ($request->request->get('clearAll')==='Clear All'){
+        if ($request->request->get('clearAll') === 'Clear All') {
             $dataForClear = $repository->findAll();
-            foreach ($dataForClear as $data){
+            foreach ($dataForClear as $data) {
                 $em->remove($data);
             }
             $em->flush();
@@ -55,13 +55,13 @@ class PageController extends AbstractController
             $buttonStatus = 'disabled';
         }
 
-        if ($request->request->get('save')==='Save to CSV'){
+        if ($request->request->get('save') === 'Save to CSV') {
 
-            $save->saveToCsv($newVideoData);
+            $save->saveToCsv($repository);
 
-        } elseif ($request->request->get('saveWithCompare')==='Save to CSV with Compare'){
+        } elseif ($request->request->get('saveWithCompare') === 'Save to CSV with Compare') {
 
-            $save->saveToCsvWithCompare($em);
+            $save->saveToCsvWithCompare($repository);
 
         }
 
@@ -73,9 +73,20 @@ class PageController extends AbstractController
     /**
      * @Route("/new/", name="new_data")
      */
-    public function new(){
-        // TODO разобраться с формами и запилить сюда добавление нового
+    public function new(EntityManagerInterface $em, Request $request)
+    {
         $form = $this->createForm(VideoDataFormType::class);
+
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $data = $form->getData();
+
+            $em->persist($data);
+            $em->flush();
+            $this->addFlash('success', 'Field added to data');
+
+            return $this->redirectToRoute('homepage');
+        }
 
         return $this->render('parse/new.html.twig', [
             'videoDataForm' => $form->createView(),
@@ -85,14 +96,32 @@ class PageController extends AbstractController
     /**
      * @Route("/update/{id}", name="update_data")
      */
-    public function update(){
-        // TODO разобраться с формами и запилить сюда обновление поля
+    public function update(EntityManagerInterface $em, Request $request, LexaniVideos $videoData)
+    {
+        $form = $this->createForm(VideoDataFormType::class, $videoData);
+
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $em->persist($videoData);
+            $em->flush();
+
+            $this->addFlash('success', 'Field Updated');
+
+            return $this->redirectToRoute('homepage', [
+                'id' => $videoData->getId(),
+            ]);
+        }
+
+        return $this->render('parse/edit.html.twig', [
+            'videoDataForm' => $form->createView(),
+        ]);
     }
 
     /**
      * @Route("/delete/{id}", name="delete_data")
      */
-    public function delete(EntityManagerInterface $em, LexaniVideosRepository $repository, $id){
+    public function delete(EntityManagerInterface $em, LexaniVideosRepository $repository, $id)
+    {
         $video = $repository->find($id);
         $em->remove($video);
         $em->flush();

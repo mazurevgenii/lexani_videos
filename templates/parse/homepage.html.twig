@@ -10,7 +10,11 @@
                 <input name="save" type="submit" value="Save to CSV" class="btn btn-primary">
             </form>
             <form action="{{ path('homepage') }}" method="POST">
-                <input name="saveWithCompare" type="submit" value="Save to CSV with Compare" class="btn btn-primary" {{ buttonStatus }}>
+                <input name="saveWithCompare" type="submit" value="Save to CSV with Compare"
+                       class="btn btn-primary" {{ buttonStatus }}>
+            </form>
+            <form action="{{ path('homepage') }}" method="POST">
+                <input name="clearAll" type="submit" value="Clear All" class="btn btn-danger">
             </form>
 
         </div>
@@ -28,20 +32,22 @@
                 </tr>
                 </thead>
                 <tbody>
-                    {% for video in videoData %}
-                        <tr>
-                            <td>{{ video.youtubeLink }}</td>
-                            <td>{{ video.title }}</td>
-                            <td>{{ video.description }}</td>
-                            <td>{{ video.thumbnail }}</td>
-                            <td>
-                                <a href="/update/{{ video.id }}" class="btn btn-info">Update</a>
-                            </td>
-                            <td>
-                                <a href="/delete/{{ video.id }}" class="btn btn-danger">Delete</a>
-                            </td>
-                        </tr>
-                    {% endfor %}
+                {% for video in videoData %}
+                    <tr>
+                        <td>{{ video.youtubeLink }}</td>
+                        <td>{{ video.title }}</td>
+                        <td>
+                            <div class="descr">{{ video.description }}</div>
+                        </td>
+                        <td>{{ video.thumbnail }}</td>
+                        <td>
+                            <a href="/update/{{ video.id }}" class="btn btn-info">Update</a>
+                        </td>
+                        <td>
+                            <a href="/delete/{{ video.id }}" class="btn btn-danger">Delete</a>
+                        </td>
+                    </tr>
+                {% endfor %}
                 </tbody>
             </table>
 

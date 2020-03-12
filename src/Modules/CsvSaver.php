@@ -1,67 +1,109 @@
 <?php
 
-
 namespace App\Modules;
 
-
-use App\Entity\LexaniVideos;
 use App\Repository\LexaniVideosRepository;
-use Doctrine\ORM\EntityManagerInterface;
 
 class CsvSaver
 {
-    public function saveToCsv($array) {
+    public function saveToCsv(LexaniVideosRepository $repository)
+    {
+        $newVideoData = $repository->findVideoDataByParseType('new');
 
         $fp = fopen('result.csv', 'w');
+        fputcsv($fp, ['Link', 'Title', 'Description', 'Thumbnail']);
 
-        fputcsv($fp, ['Link','Title','Description','Thumbnail']);
-
-        foreach ($array as $fields) {
-            $newArray =  (array) $fields;
-            fputcsv($fp, $newArray);
+        foreach ($newVideoData as $newData) {
+            fputcsv($fp, [
+                $newData->getYoutubeLink(),
+                $newData->getTitle(),
+                $newData->getDescription(),
+                $newData->getThumbnail(),
+            ]);
         }
     }
 
-
-    // TODO хуйню сохраняет, переделать логику
-    public function saveToCsvWithCompare (EntityManagerInterface $em) {
-
-        $repository = $em->getRepository(LexaniVideos::class);
-
-        $newVideoData = $repository->findBy(['parseType' => 'new']);
-        $oldVideoData = $repository->findBy(['parseType' => 'old']);
+    public function saveToCsvWithCompare(LexaniVideosRepository $repository)
+    {
+        $newVideoData = $repository->findVideoDataByParseType('new');
+        $oldVideoData = $repository->findVideoDataByParseType('old');
 
         $fp = fopen('result_with_compare.csv', 'w');
-        fputcsv($fp, ['Link_old','Link','Title_old','Title','Description_old','Description','Thumbnail_old','Thumbnail']);
+        fputcsv($fp, [
+            'Link_old',
+            'Link',
+            'Title_old',
+            'Title',
+            'Description_old',
+            'Description',
+            'Thumbnail_old',
+            'Thumbnail'
+        ]);
 
         foreach ($newVideoData as $newData) {
             foreach ($oldVideoData as $oldData) {
-                if ($newData->getYoutubeLink() === $oldData->getYoutubeLink()){
-                    fputcsv($fp, [$oldData->getYoutubeLink(),
+                if ($newData->getYoutubeLink() === $oldData->getYoutubeLink()) {
+                    fputcsv($fp, [
+                        $oldData->getYoutubeLink(),
                         $newData->getYoutubeLink(),
                         $oldData->getTitle(),
                         $newData->getTitle(),
                         $oldData->getDescription(),
                         $newData->getDescription(),
                         $oldData->getThumbnail(),
-                        $newData->getThumbnail()]);
+                        $newData->getThumbnail(),
+                    ]);
                 }
             }
-
-            fputcsv($fp, ['', $newData->getYoutubeLink(),'',$newData->getTitle(),'',$newData->getDescription(),'',$newData->getThumbnail()]);
+        }
+        foreach ($newVideoData as $newData) {
+            $newDataYoutubeLink[] = $newData->getYoutubeLink();
+        }
+        foreach ($oldVideoData as $oldData) {
+            $oldDataYoutubeLink[] = $oldData->getYoutubeLink();
         }
 
-        foreach ($oldVideoData as $oldData){
-            foreach ($newVideoData as $newData) {
-                if ($newData->getYoutubeLink() === $oldData->getYoutubeLink()){
-                    break;
+        $yuotubeLinksExistOnlyInNewData = array_diff($newDataYoutubeLink, $oldDataYoutubeLink);
+        $yuotubeLinksExistOnlyInOldData = array_diff($oldDataYoutubeLink, $newDataYoutubeLink);
+
+        if (!empty($yuotubeLinksExistOnlyInNewData)) {
+            foreach ($yuotubeLinksExistOnlyInNewData as $onlyNewLink) {
+                foreach ($newVideoData as $newData) {
+                    if ($onlyNewLink === $newData->getYoutubeLink()) {
+                        fputcsv($fp, [
+                            '',
+                            $newData->getYoutubeLink(),
+                            '',
+                            $newData->getTitle(),
+                            '',
+                            $newData->getDescription(),
+                            '',
+                            $newData->getThumbnail(),
+                        ]);
+                    }
                 }
             }
+        }
 
-            fputcsv($fp, [$oldData->getYoutubeLink(),'', $oldData->getTitle(),'',$oldData->getDescription(),'',$oldData->getThumbnail(),'']);
+        if (!empty($yuotubeLinksExistOnlyInOldData)) {
+            foreach ($yuotubeLinksExistOnlyInOldData as $onlyOldLink) {
+                foreach ($oldVideoData as $oldData) {
+                    if ($onlyOldLink === $oldData->getYoutubeLink()) {
+                        fputcsv($fp, [
+                            $oldData->getYoutubeLink(),
+                            '',
+                            $oldData->getTitle(),
+                            '',
+                            $oldData->getDescription(),
+                            '',
+                            $oldData->getThumbnail(),
+                            '',
+                        ]);
+                    }
+                }
+            }
         }
 
         fclose($fp);
-
     }
 }

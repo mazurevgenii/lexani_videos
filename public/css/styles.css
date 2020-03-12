@@ -7,4 +7,6 @@
 form {
     margin: 20px;
 }
-
+.table-responsive {
+    overflow-x: unset;
+}
