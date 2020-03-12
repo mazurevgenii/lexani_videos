@@ -26,7 +26,8 @@ class YoutubeGrabber
             });
 
         foreach ($videoId as $key => $id) {
-            $youtubeLink = "https://www.googleapis.com/youtube/v3/videos?id=" . $id . "&key=AIzaSyAyH7TxTT-Mq0qmEvJ-NSMiOmohZ53JOl4&part=snippet&fields=items(snippet(title,description))";
+
+            $youtubeLink = "https://www.googleapis.com/youtube/v3/videos?id=" . $id . "&key=" . $key . "&part=snippet&fields=items(snippet(title,description))";
 
             $youtubeLinkResponse = $client->request('GET', $youtubeLink);
             $data = $youtubeLinkResponse->getContent();
@@ -56,7 +57,7 @@ class YoutubeGrabber
 
             $em->persist($lexaniVideos);
 
-            if ($key > 4) {
+            if ($key > 2) {
                 break;
             }
         }
