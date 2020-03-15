@@ -8,7 +8,7 @@ class CsvSaver
 {
     public function saveToCsv(LexaniVideosRepository $repository)
     {
-        $newVideoData = $repository->findVideoDataByParseType('new');
+        $newVideoData = $repository->findNewVideoData();
 
         $fp = fopen('result.csv', 'w');
         fputcsv($fp, ['Link', 'Title', 'Description', 'Thumbnail']);
@@ -21,12 +21,13 @@ class CsvSaver
                 $newData->getThumbnail(),
             ]);
         }
+        fclose($fp);
     }
 
     public function saveToCsvWithCompare(LexaniVideosRepository $repository)
     {
-        $newVideoData = $repository->findVideoDataByParseType('new');
-        $oldVideoData = $repository->findVideoDataByParseType('old');
+        $newVideoData = $repository->findNewVideoData();
+        $oldVideoData = $repository->findOldVideoData();
 
         $fp = fopen('result_with_compare.csv', 'w');
         fputcsv($fp, [
@@ -63,11 +64,11 @@ class CsvSaver
             $oldDataYoutubeLink[] = $oldData->getYoutubeLink();
         }
 
-        $yuotubeLinksExistOnlyInNewData = array_diff($newDataYoutubeLink, $oldDataYoutubeLink);
-        $yuotubeLinksExistOnlyInOldData = array_diff($oldDataYoutubeLink, $newDataYoutubeLink);
+        $youtubeLinksExistOnlyInNewData = array_diff($newDataYoutubeLink, $oldDataYoutubeLink);
+        $youtubeLinksExistOnlyInOldData = array_diff($oldDataYoutubeLink, $newDataYoutubeLink);
 
-        if (!empty($yuotubeLinksExistOnlyInNewData)) {
-            foreach ($yuotubeLinksExistOnlyInNewData as $onlyNewLink) {
+        if (!empty($youtubeLinksExistOnlyInNewData)) {
+            foreach ($youtubeLinksExistOnlyInNewData as $onlyNewLink) {
                 foreach ($newVideoData as $newData) {
                     if ($onlyNewLink === $newData->getYoutubeLink()) {
                         fputcsv($fp, [
@@ -85,8 +86,8 @@ class CsvSaver
             }
         }
 
-        if (!empty($yuotubeLinksExistOnlyInOldData)) {
-            foreach ($yuotubeLinksExistOnlyInOldData as $onlyOldLink) {
+        if (!empty($youtubeLinksExistOnlyInOldData)) {
+            foreach ($youtubeLinksExistOnlyInOldData as $onlyOldLink) {
                 foreach ($oldVideoData as $oldData) {
                     if ($onlyOldLink === $oldData->getYoutubeLink()) {
                         fputcsv($fp, [

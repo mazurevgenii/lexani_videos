@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\LexaniVideosRepository")
@@ -17,7 +18,9 @@ class LexaniVideos
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=100, nullable=true)
+     * @ORM\Column(type="string", length=100)
+     * @Assert\Url()
+     * @Assert\NotBlank()
      */
     private $youtubeLink;
 
@@ -33,6 +36,8 @@ class LexaniVideos
 
     /**
      * @ORM\Column(type="string", nullable=true)
+     * @Assert\Url()
+     * @Assert\NotBlank()
      */
     private $thumbnail;
 
@@ -40,6 +45,12 @@ class LexaniVideos
      * @ORM\Column(type="string", length=5)
      */
     private $parseType;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\UserParameters", inversedBy="lexaniVideos")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $userParameters;
 
     public function getId(): ?int
     {
@@ -102,6 +113,18 @@ class LexaniVideos
     public function setParseType(string $parseType): self
     {
         $this->parseType = $parseType;
+
+        return $this;
+    }
+
+    public function getUserParameters(): ?UserParameters
+    {
+        return $this->userParameters;
+    }
+
+    public function setUserParameters(?UserParameters $userParameters): self
+    {
+        $this->userParameters = $userParameters;
 
         return $this;
     }

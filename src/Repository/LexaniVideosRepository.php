@@ -23,14 +23,17 @@ class LexaniVideosRepository extends ServiceEntityRepository
     * @return LexaniVideos[]
     */
 
-    public function findVideoDataByParseType($parseType):array
+    public function findNewVideoData()
     {
-        return $this->createQueryBuilder('a')
-            ->where('a.parseType = :parseType')
-            ->setParameter('parseType', $parseType)
-            ->getQuery()
-            ->execute();
+        return $this->findBy(['parseType' => 'new']);
     }
+
+    public function findOldVideoData()
+    {
+        return $this->findBy(['parseType' => 'old']);
+    }
+
+
 
 
 
