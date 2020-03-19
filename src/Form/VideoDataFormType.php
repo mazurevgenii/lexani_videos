@@ -18,7 +18,7 @@ class VideoDataFormType extends AbstractType
             ->add('youtubeLink', TextType::class)
             ->add('title', TextType::class)
             ->add('description', TextareaType::class)
-            ->add('thumbnail', TextType::class)
+            ->add('thumbnails', TextType::class)
             ->add('parseType', ChoiceType::class, [
                 'choices' => [
                     'new' => 'new',

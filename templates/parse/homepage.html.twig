@@ -1,15 +1,17 @@
 {% extends 'base.html.twig' %}
 
+{% block title %}Update field in the database{% endblock %}
+
 {% block body %}
     <div class="container-lg">
         <div class="buttons">
-            <form action="{{ path('homepage') }}" method="POST">
+            <form action="{{ path('lexani') }}" method="POST">
                 <input name="request" type="submit" value="New request to Lexani" class="btn btn-primary">
             </form>
-            <form action="{{ path('homepage') }}" method="POST">
+            <form action="{{ path('save') }}" method="POST">
                 <input name="save" type="submit" value="Save to CSV" class="btn btn-primary">
             </form>
-            <form action="{{ path('homepage') }}" method="POST">
+            <form action="{{ path('save') }}" method="POST">
                 <input name="saveWithCompare" type="submit" value="Save to CSV with Compare"
                        class="btn btn-primary" {{ buttonStatus }}>
             </form>
@@ -29,6 +31,7 @@
                     <th>Title</th>
                     <th>Description</th>
                     <th>Thumbnail</th>
+                    <th>Parse Type</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -39,7 +42,8 @@
                         <td>
                             <div class="descr">{{ video.description }}</div>
                         </td>
-                        <td>{{ video.thumbnail }}</td>
+                        <td>{{ video.thumbnails }}</td>
+                        <td>{{ video.parseType }}</td>
                         <td>
                             <a href="/update/{{ video.id }}" class="btn btn-info">Update</a>
                         </td>

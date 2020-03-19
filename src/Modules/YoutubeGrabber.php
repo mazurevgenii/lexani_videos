@@ -12,8 +12,14 @@ use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 
 class YoutubeGrabber
 {
+    private $em;
 
-    public function getContentsFromYouTube(EntityManagerInterface $em)
+    public function __construct(EntityManagerInterface $em)
+    {
+        $this->em = $em;
+    }
+
+    public function getContentsFromYouTube($ip, $browser)
     {
         $parseUrl = 'https://lexani.com/videos';
         $client = HttpClient::create();
@@ -43,11 +49,10 @@ class YoutubeGrabber
         $fp = fopen('Broken Links.csv', 'w');
         fputcsv($fp, ['Link', 'Error message']);
 
-
         $userParameters = new UserParameters();
-        $userParameters->setIp('IP');
-        $userParameters->setBrowser('Browser');
-        $em->persist($userParameters);
+        $userParameters->setIp($ip);
+        $userParameters->setBrowser($browser);
+        $this->em->persist($userParameters);
 
         foreach ($videoId as $key => $id) {
 
@@ -77,27 +82,37 @@ class YoutubeGrabber
             $json = json_decode($data, true);
 
             $description = $json['items'][0]['snippet']['description'];
+            $description = str_replace("\n", " ", $description);
             $title = $json['items'][0]['snippet']['title'];
             $youtubeLink = "https://www.youtube.com/watch?v=" . $id;
             $thumbnails = "http://img.youtube.com/vi/" . $id . "/0.jpg";
             $parseType = "new";
-
 
             $lexaniVideos = new LexaniVideos();
             $lexaniVideos
                 ->setYoutubeLink($youtubeLink)
                 ->setTitle($title)
                 ->setDescription($description)
-                ->setThumbnail($thumbnails)
+                ->setThumbnails($thumbnails)
                 ->setParseType($parseType)
                 ->setUserParameters($userParameters);
 
-            $em->persist($lexaniVideos);
-            if ($key > 5){
+            $this->em->persist($lexaniVideos);
+            if($key>30){
                 break;
             }
         }
         fclose($fp);
-        $em->flush();
+
+        $this->em->flush();
+
+        $file = 'Broken Links.csv';
+        header("Content-Length: ".filesize($file));
+        header("Content-Disposition: attachment; filename=".$file);
+        header("Content-Type: application/x-force-download; name=\"".$file."\"");
+        ob_clean();
+        flush();
+        readfile($file, true);
+        exit;
     }
 }

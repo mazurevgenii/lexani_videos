@@ -11,3 +11,11 @@ form {
 .table-responsive {
     overflow-x: unset;
 }
+
+td {
+    max-width: 220px;
+    white-space: nowrap; /* Отменяем перенос текста */
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+}

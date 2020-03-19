@@ -3,6 +3,7 @@
 namespace App\Modules;
 
 use App\Repository\LexaniVideosRepository;
+use Symfony\Component\Filesystem\Filesystem;
 
 class CsvSaver
 {
@@ -18,10 +19,19 @@ class CsvSaver
                 $newData->getYoutubeLink(),
                 $newData->getTitle(),
                 $newData->getDescription(),
-                $newData->getThumbnail(),
+                $newData->getThumbnails(),
             ]);
         }
         fclose($fp);
+
+        $file = 'result.csv';
+        header("Content-Length: ".filesize($file));
+        header("Content-Disposition: attachment; filename=".$file);
+        header("Content-Type: application/x-force-download; name=\"".$file."\"");
+        ob_clean();
+        flush();
+        readfile($file, true);
+        exit;
     }
 
     public function saveToCsvWithCompare(LexaniVideosRepository $repository)
@@ -37,8 +47,8 @@ class CsvSaver
             'Title',
             'Description_old',
             'Description',
-            'Thumbnail_old',
-            'Thumbnail'
+            'Thumbnails_old',
+            'Thumbnails'
         ]);
 
         foreach ($newVideoData as $newData) {
@@ -51,8 +61,8 @@ class CsvSaver
                         $newData->getTitle(),
                         $oldData->getDescription(),
                         $newData->getDescription(),
-                        $oldData->getThumbnail(),
-                        $newData->getThumbnail(),
+                        $oldData->getThumbnails(),
+                        $newData->getThumbnails(),
                     ]);
                 }
             }
@@ -79,7 +89,7 @@ class CsvSaver
                             '',
                             $newData->getDescription(),
                             '',
-                            $newData->getThumbnail(),
+                            $newData->getThumbnails(),
                         ]);
                     }
                 }
@@ -97,7 +107,7 @@ class CsvSaver
                             '',
                             $oldData->getDescription(),
                             '',
-                            $oldData->getThumbnail(),
+                            $oldData->getThumbnails(),
                             '',
                         ]);
                     }
@@ -106,5 +116,14 @@ class CsvSaver
         }
 
         fclose($fp);
+
+        $file = 'result_with_compare.csv';
+        header("Content-Length: ".filesize($file));
+        header("Content-Disposition: attachment; filename=".$file);
+        header("Content-Type: application/x-force-download; name=\"".$file."\"");
+        ob_clean();
+        flush();
+        readfile($file, true);
+        exit;
     }
 }

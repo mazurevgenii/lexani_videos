@@ -35,11 +35,11 @@ class LexaniVideos
     private $description;
 
     /**
-     * @ORM\Column(type="string", nullable=true)
+     * @ORM\Column(type="string", length=100)
      * @Assert\Url()
      * @Assert\NotBlank()
      */
-    private $thumbnail;
+    private $thumbnails;
 
     /**
      * @ORM\Column(type="string", length=5)
@@ -62,7 +62,7 @@ class LexaniVideos
         return $this->youtubeLink;
     }
 
-    public function setYoutubeLink(?string $youtubeLink): self
+    public function setYoutubeLink(string $youtubeLink): self
     {
         $this->youtubeLink = $youtubeLink;
 
@@ -93,14 +93,14 @@ class LexaniVideos
         return $this;
     }
 
-    public function getThumbnail(): ?string
+    public function getThumbnails(): ?string
     {
-        return $this->thumbnail;
+        return $this->thumbnails;
     }
 
-    public function setThumbnail(?string $thumbnail): self
+    public function setThumbnails(string $thumbnails): self
     {
-        $this->thumbnail = $thumbnail;
+        $this->thumbnails = $thumbnails;
 
         return $this;
     }

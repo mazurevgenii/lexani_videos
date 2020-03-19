@@ -19,7 +19,7 @@ class UserParameters
     private $id;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\LexaniVideos", mappedBy="userParameters")
+     * @ORM\OneToMany(targetEntity="App\Entity\LexaniVideos", mappedBy="userParameters", orphanRemoval=true, cascade={"persist", "remove"})
      */
     private $lexaniVideos;
 

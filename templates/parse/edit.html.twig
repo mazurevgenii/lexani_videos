@@ -1,12 +1,12 @@
 {% extends 'base.html.twig' %}
 
+{% block title %}Update field in the database{% endblock %}
+
 {% block body %}
     <h1>Edit Video Data</h1>
 
-    {{ form_start(videoDataForm) }}
-        {{ form_widget(videoDataForm) }}
-
-        <button type="submit" class="btn btn-primary" formnovalidate>Update</button>
-    {{ form_end(videoDataForm) }}
+    {{ include('parse/_form.html.twig', {
+        button_text: 'Update!'
+    }) }}
 
 {% endblock %}
