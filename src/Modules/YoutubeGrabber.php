@@ -98,9 +98,6 @@ class YoutubeGrabber
                 ->setUserParameters($userParameters);
 
             $this->em->persist($lexaniVideos);
-            if($key>30){
-                break;
-            }
         }
         fclose($fp);
 
